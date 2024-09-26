@@ -1,0 +1,42 @@
+//- 判断 site.data.creativity 是否存在
+if site.data.creativity
+  //- 创建一个 id 为 skills-tags-group-all 的 div，作为所有标签组的容器
+  #skills-tags-group-all
+    //- 创建一个包含标签组的包装 div
+    .tags-group-wrapper
+      //- 遍历 site.data.creativity 数组，i 表示当前遍历的项
+      each i in site.data.creativity
+        //- 提取 creativity_list 中索引为偶数的元素
+        - const evenNum = i.creativity_list.filter((x, index) => index % 2 === 0);
+        //- 提取 creativity_list 中索引为奇数的元素
+        - const oddNum = i.creativity_list.filter((x, index) => index % 2 === 1);
+
+        //- 遍历 creativity_list，生成偶数和奇数索引对应的图标
+        each item, index in i.creativity_list
+          //- 如果索引+1 的值不超过偶数和奇数列表的长度，则创建成对的图标组
+          if ((index+1 <= evenNum.length) && (index+1 <= oddNum.length))
+            //- 创建一对图标的容器
+            .tags-group-icon-pair
+              //- 左侧图标（偶数索引）的样式和背景颜色
+              .tags-group-icon(style=`background: ${evenNum[index].color}`)
+                //- 图标图片，设置标题、图片路径、大小和替代文本
+                img.no-lightbox(title=evenNum[index].name, src=evenNum[index].icon, size="60px" alt=evenNum[index].name)
+              //- 右侧图标（奇数索引）的样式和背景颜色
+              .tags-group-icon(style=`background: ${oddNum[index].color}`)
+                //- 图标图片，设置标题、图片路径、大小和替代文本
+                img.no-lightbox(title=oddNum[index].name, src=oddNum[index].icon, size="60px" alt=oddNum[index].name)
+
+        //- 再次遍历 creativity_list，生成偶数和奇数索引对应的图标（疑似重复部分）
+        each item, index in i.creativity_list
+          //- 如果索引+1 的值不超过偶数和奇数列表的长度，则创建成对的图标组
+          if ((index+1 <= evenNum.length) && (index+1 <= oddNum.length))
+            //- 创建一对图标的容器
+            .tags-group-icon-pair
+              //- 左侧图标（偶数索引）的样式和背景颜色
+              .tags-group-icon(style=`background: ${evenNum[index].color}`)
+                //- 图标图片，设置标题、图片路径、大小和替代文本
+                img.no-lightbox(title=evenNum[index].name, src=evenNum[index].icon, size="60px" alt=evenNum[index].name)
+              //- 右侧图标（奇数索引）的样式和背景颜色
+              .tags-group-icon(style=`background: ${oddNum[index].color}`)
+                //- 图标图片，设置标题、图片路径、大小和替代文本
+                img.no-lightbox(title=oddNum[index].name, src=oddNum[index].icon, size="60px" alt=oddNum[index].name)

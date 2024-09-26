@@ -1,0 +1,26 @@
+//- 引入 Pace.js 加载动画的 CSS 样式文件
+//- 如果 theme.preloader.pace_css_url 存在，则使用它作为样式文件的 URL
+//- 否则，使用 theme.asset.pace_default_css 作为默认的 Pace 样式文件
+link(rel="stylesheet", href=url_for(theme.preloader.pace_css_url || theme.asset.pace_default_css))
+
+//- 异步加载 Pace.js 的 JavaScript 文件
+//- 使用 async 属性确保脚本异步加载，不阻塞页面的其他资源加载
+//- src 属性指向 theme.asset.pace_js，即 Pace.js 的脚本文件 URL
+//- data-pace-options 属性配置 Pace.js 的加载行为
+//- { "restartOnRequestAfter":false, "eventLag":false } 配置项
+//- restartOnRequestAfter:false 关闭自动重启 Pace.js 计时器的功能
+//- eventLag:false 禁用 eventLag 检测（通常用于网络请求的监控）
+script(async src=url_for(theme.asset.pace_js), data-pace-options='{ "restartOnRequestAfter":false,"eventLag":false}')
+
+
+
+//- 注释解析：
+//- CSS 样式加载 (link 标签)：
+//- theme.preloader.pace_css_url：如果用户定义了 pace_css_url，则使用这个 URL 加载 Pace.js 的样式文件。
+//- 如果没有定义，则使用 theme.asset.pace_default_css 作为默认的样式文件。
+
+//- Pace.js 脚本加载 (script 标签)：
+//- async：让 JavaScript 脚本异步加载，以避免阻塞页面其他部分的渲染。
+//- data-pace-options：通过 JSON 格式的属性配置 Pace.js 的行为。
+//- "restartOnRequestAfter": false：关闭在 AJAX 请求后重新启动加载动画的功能。
+//- "eventLag": false：关闭页面事件滞后的监控，提升加载效率。

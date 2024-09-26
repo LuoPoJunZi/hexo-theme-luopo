@@ -1,0 +1,70 @@
+//- 这段代码是用来渲染社交图标的。它根据提供的 theme.social 数据，动态生成社交图标的 HTML 元素，并根据图标类型和动画效果进行相应的处理。
+
+//- ### 功能说明：
+
+//- 1. **动态渲染社交图标**：
+//-    - `theme.social` 是一个对象或数组，里面每个元素包含了社交链接、图标类名以及可选的动画效果。每个元素由 `||` 分隔成多部分：
+//-      - 第一部分是链接地址。
+//-      - 第二部分是图标的类名（如 `fa-facebook` 或 `icon-twitter`）。
+//-      - 第三部分是动画效果类名（可选，默认为 `faa-tada`）。
+   
+//- 2. **图标类型的判断**：
+//-    - 如果图标类名以 `fa` 开头，表示使用 Font Awesome 图标，通过 `<i>` 标签渲染。
+//-    - 如果图标类名以 `icon` 开头，表示使用 SVG 图标，通过 `<svg>` 和 `<use>` 标签引用。
+//-    - 如果图标类名以 `anzhiyu` 开头，表示使用自定义图标字体，通过 `<i>` 标签加上 `anzhiyufont` 类渲染。
+
+//- 3. **动画效果**：
+//-    - 使用 `faa-parent` 和 `animated-hover` 类来控制图标的动画效果。默认动画类是 `faa-tada`，如果有提供不同的动画类名，也会替换默认动画。
+
+//- ### 示例：
+
+//- 假设 `theme.social` 的数据如下：
+
+//- ```json
+//- {
+//-   "Facebook": "https://facebook.com||fa-facebook||faa-bounce",
+//-   "Twitter": "https://twitter.com||fa-twitter",
+//-   "CustomIcon": "https://example.com||icon-custom||faa-flash"
+//- }
+//- ```
+
+//- 根据上述数据，生成的 HTML 结构如下：
+
+//- ```html
+//- <a class="social-icon faa-parent animated-hover" href="https://facebook.com" target="_blank" title="Facebook">
+//-   <i class="fa-facebook faa-bounce"></i>
+//- </a>
+//- <a class="social-icon faa-parent animated-hover" href="https://twitter.com" target="_blank" title="Twitter">
+//-   <i class="fa-twitter faa-tada"></i>
+//- </a>
+//- <a class="social-icon faa-parent animated-hover" href="https://example.com" target="_blank" title="CustomIcon">
+//-   <svg class="icon faa-flash" aria-hidden="true">
+//-     <use xlink:href="#icon-custom"></use>
+//-   </svg>
+//- </a>
+//- ```
+
+//- ### 总结：
+//- - 这段代码根据数据中的 URL、图标类名和动画效果，动态生成社交链接图标。通过对不同类型的图标进行判断（Font Awesome、SVG、自定义图标字体），保证了多样化的渲染方式，并且支持动画效果。
+
+each value, title in theme.social
+  //- 每个社交图标生成一个链接（<a> 标签）
+  a.social-icon.faa-parent.animated-hover(href=url_for(trim(value.split('||')[0])) target="_blank" title=title === undefined ? '' : trim(title))
+    
+    //- 检查图标是否有第二部分信息（图标类名）
+    if value.split('||')[1]
+      - var icon_value = trim(value.split('||')[1])  //- 图标类名
+      - var anima_value = value.split('||')[2] ? trim(value.split('||')[2]) : 'faa-tada'  //- 动画效果类名，默认 'faa-tada'
+
+      //- 如果图标类名是以 "fa" 开头（Font Awesome 图标）
+      if (icon_value.startsWith("fa"))
+        i(class=icon_value + ' ' + anima_value)  //- 用<i>标签渲染图标，带上图标类和动画类
+
+      //- 如果图标类名是以 "icon" 开头（SVG 图标）
+      else if (icon_value.startsWith("icon"))
+        svg.icon(aria-hidden="true" class=anima_value)
+          use(xlink:href=`#`+ icon_value)  //- 使用 <svg> 标签和 <use> 标签引用图标
+
+      //- 如果图标类名是以 "anzhiyu" 开头（自定义字体图标）
+      else if (icon_value.startsWith("anzhiyu"))
+        i.anzhiyufont(class=icon_value)  //- 用自定义图标字体渲染

@@ -1,0 +1,94 @@
+//- 检查是否禁用顶部图片，并且页面没有显式禁用顶部图片
+if !theme.disable_top_img && page.top_img !== false
+  //- 如果是文章页面
+  if is_post()
+    //- 获取文章的顶部图片，依次优先使用 page.top_img, page.cover 或 page.randomcover
+    - var top_img = page.top_img || page.cover || page.randomcover
+  //- 如果是单页
+  else if is_page()
+    //- 获取页面的顶部图片，优先使用 page.top_img，其次使用默认顶部图片
+    - var top_img = page.top_img || theme.default_top_img
+  //- 如果是首页
+  else if is_home()
+    //- 获取首页图片，优先使用 theme.index_img 其次使用默认顶部图片，如果 theme.index_img 被禁用则为 false
+    - var top_img = theme.index_img !== false ? theme.index_img || theme.default_top_img : false
+    - var home_index_img = theme.index_img !== false ? theme.index_img || theme.default_top_img : false
+  //- 其他页面，获取顶部图片，依次使用 page.top_img 或默认顶部图片
+  else
+    - var top_img = page.top_img || theme.default_top_img
+
+  //- 如果 top_img 不为 false，处理图片路径和背景图片
+  if top_img !== false
+    - var imgSource = top_img && top_img.indexOf('/') !== -1 ? url_for(top_img) : top_img
+    - var bg_img = top_img ? imgSource : ''
+    - var home_index_img_bg = home_index_img ? home_index_img : ''
+    - var site_title = page.title || page.tag || page.category || config.title
+    - var isHomeClass = is_home() ? 'full_page' : 'not-home-page'
+    - is_post() ? isHomeClass = 'post-bg' : isHomeClass
+  //- 否则设置为没有顶部图片的样式
+  else
+    - var isHomeClass = 'not-top-img'
+else
+  //- 如果禁用了顶部图片，则设置 top_img 为 false，并设置样式为没有顶部图片
+  - var top_img = false
+  - var isHomeClass = 'not-top-img'
+
+//- 页眉区域设置，包含背景图片和页面类型样式
+header#page-header(class=`${isHomeClass}` style=home_index_img_bg)
+  //- 包含导航栏
+  !=partial('includes/header/nav', {}, {cache: true})
+
+  //- 如果有顶部图片，根据不同页面类型加载相应内容
+  if top_img !== false
+    //- 文章页面
+    if is_post()
+      //- 如果文章有 Bilibili 背景，加载 Bilibili 的 banner
+      if page.bilibili_bg
+        !=partial('includes/bili-banner/index')
+      else
+        //- 加载文章信息部分
+        include ./post-info.pug
+
+        //- 如果主题启用了动态效果，并且文章顶部有波浪效果
+        if theme.dynamicEffect && theme.dynamicEffect.postTopWave
+          section.main-hero-waves-area.waves-area
+            svg.waves-svg(xmlns='http://www.w3.org/2000/svg', xlink='http://www.w3.org/1999/xlink', viewBox='0 24 150 28', preserveAspectRatio='none', shape-rendering='auto')
+              defs
+                //- 定义波浪的路径
+                path#gentle-wave(d='M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z')
+              g.parallax
+                use(href='#gentle-wave', x='48', y='0')
+                use(href='#gentle-wave', x='48', y='3')
+                use(href='#gentle-wave', x='48', y='5')
+                use(href='#gentle-wave', x='48', y='7')
+        //- 文章顶部背景图片
+        #post-top-cover
+          img#post-top-bg(class='nolazyload' src=bg_img)
+
+    //- 首页的情况
+    else if is_home() 
+      #site-info
+        //- 网站标题
+        h1#site-title=site_title
+        //- 如果启用了副标题
+        if theme.subtitle.enable
+          - var loadSubJs = true
+          #site-subtitle
+            span#subtitle
+
+        //- 如果启用了社交图标，加载社交部分
+        if(theme.social)
+          #site_social_icons
+            !=fragment_cache('social', function(){return partial('includes/header/social')})
+
+      //- 首页滚动提示箭头
+      #scroll-down
+        i.anzhiyufont.anzhiyu-icon-angle-down.scroll-down-effects
+
+    //- 其他页面的顶部信息显示
+    else
+      #page-site-info
+        h1#site-title=site_title
+
+
+//- 这段代码根据页面的不同类型，动态设置顶部图片和相关信息。对于文章、单页、首页以及其他页面，它会根据配置或页面属性决定是否展示顶部图片，并根据不同的页面类型展示相应的信息。

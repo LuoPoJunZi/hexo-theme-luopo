@@ -1,0 +1,36 @@
+#he-plugin-simple
+  // script. 代表嵌入的脚本内容
+  script.
+    // 定义一个名为WIDGET的全局对象，包含天气插件的配置
+    var WIDGET = {
+      // CONFIG 是配置对象，里面是插件的各项配置参数
+      "CONFIG": {
+        // modules 代表要显示的模块，这里用四个数字表示不同的功能
+        "modules": "0124", // 0：天气，1：空气质量，2：预警，4：生活指数
+        "background": "2", // 背景类型，2表示某种默认背景
+        "tmpColor": "FFFFFF", // 温度字体颜色，这里为白色（16进制表示）
+        "tmpSize": "16", // 温度字体大小，单位为像素
+        "cityColor": "FFFFFF", // 城市名称的字体颜色
+        "citySize": "16", // 城市名称的字体大小
+        "aqiColor": "E8D87B", // 空气质量指数的颜色，使用16进制颜色代码
+        "aqiSize": "16", // 空气质量指数的字体大小
+        "weatherIconSize": "24", // 天气图标的大小，单位为像素
+        "alertIconSize": "18", // 天气预警图标的大小
+        "padding": "10px 10px 10px 10px", // 插件的内边距，上右下左各10px
+        "shadow": "0", // 插件的阴影大小，0表示无阴影
+        "language": "auto", // 语言设置，auto表示根据浏览器自动选择语言
+        "borderRadius": "20", // 边框圆角的大小，单位为像素
+        "fixed": "true", // 是否固定位置，true表示固定
+        "vertical": "top", // 垂直位置，顶部对齐
+        "horizontal": "left", // 水平位置，左侧对齐
+        "left": "20", // 距离左侧的距离，单位是px
+        "top": "7.1", // 距离顶部的距离，单位是百分比
+        "key": "df245676fb434a0691ead1c63341cd94" // 插件的API密钥，用于获取天气数据
+      }
+    }
+
+  // 引入样式文件，用于设置天气插件的样式
+  link(rel="stylesheet", href="https://widget.qweather.net/simple/static/css/he-simple.css?v=1.4.0")
+
+  // 引入插件的JavaScript文件，v1.4.0是版本号
+  script(src="https://widget.qweather.net/simple/static/js/he-simple.js?v=1.4.0")

@@ -1,0 +1,8 @@
+//- 如果主题中定义了站点验证信息
+if theme.site_verification
+  //- 遍历每个验证项
+  each item in theme.site_verification
+    //- 为每个验证项添加 meta 标签
+    meta(name=item.name content=item.content)
+
+//- 这段代码的作用是根据主题配置添加站点验证信息的 meta 标签，以便进行搜索引擎或其他服务的验证。

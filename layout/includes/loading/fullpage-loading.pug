@@ -1,0 +1,46 @@
+//- 这段代码主要用于实现网站的加载动画，包括显示一个加载头像，以及在页面加载完成时隐藏加载动画。它还支持 PJAX（通过 AJAX 的页面无刷新加载）事件处理。
+
+//- 定义加载时显示的图片，如果 theme.preloader.avatar 存在，则使用它，否则使用 theme.avatar.img
+- loading_img = theme.preloader.avatar ? theme.preloader.avatar : theme.avatar.img
+
+//- 定义加载动画的外层容器 #loading-box，点击时触发 'loaded' 类的添加，隐藏加载动画
+#loading-box(onclick='document.getElementById("loading-box").classList.add("loaded")')
+  //- 加载动画的背景层
+  .loading-bg
+    //- 显示加载的头像图片，类名 'nolazyload' 禁用图片懒加载，图片来源为 loading_img
+    img.loading-img(alt="加载头像" class='nolazyload' src=url_for(loading_img))
+    //- 加载动画的小点装饰元素
+    .loading-image-dot
+
+//- JavaScript 代码块，用于控制加载动画的显示与隐藏
+script.
+  const preloader = {
+    //- 结束加载动画，给 #loading-box 添加 'loaded' 类，隐藏加载动画
+    endLoading: () => {
+      document.getElementById('loading-box').classList.add("loaded");
+    },
+    //- 初始化加载动画，移除 'loaded' 类，显示加载动画
+    initLoading: () => {
+      document.getElementById('loading-box').classList.remove("loaded")
+    }
+  }
+  
+  //- 当页面完全加载后，调用 preloader.endLoading() 来隐藏加载动画
+  window.addEventListener('load',()=> { preloader.endLoading() })
+  
+  //- 设置一个 10 秒的超时器，确保在 10 秒后自动隐藏加载动画，即使页面尚未加载完成
+  setTimeout(function(){preloader.endLoading();},10000)
+
+  //- 如果 PJAX 未启用，监听 PJAX 的发送和完成事件，分别显示和隐藏加载动画
+  if (!{theme.pjax && theme.pjax.enable}) {
+    //- 当 PJAX 发送请求时，调用 preloader.initLoading() 显示加载动画
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    //- 当 PJAX 请求完成时，调用 preloader.endLoading() 隐藏加载动画
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+
+
+//- 注释解析：
+//- PUG模板部分：详细描述了每个元素及其用途，比如头像加载、点击隐藏等。
+//- JavaScript部分：解释了控制加载动画的逻辑，包括初始化加载、结束加载、页面加载完成后的自动隐藏、以及10秒的超时处理。
+//- PJAX支持：说明了在启用 PJAX 时如何在每次页面部分加载时显示/隐藏加载动画。

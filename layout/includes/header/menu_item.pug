@@ -1,0 +1,79 @@
+//- 检查是否有主题菜单配置
+if theme.menu
+  //- 用于移动端侧边栏的隐藏菜单项处理
+  - let sidebarChildHide = theme.hide_sidebar_menu_child ? 'hide' : ''
+
+  .menus_items
+    //- 遍历 theme.menu 中的每个键值对（label 为键，value 为值）
+    each value, label in theme.menu
+      //- 如果 value 不是对象（即它是一个单级菜单）
+      if typeof value !== 'object'
+        .menus_item
+          //- 生成菜单项的链接，并使用 `url_for` 函数处理链接路径
+          a.site-page.faa-parent.animated-hover(href=url_for(trim(value.split('||')[0])))
+            //- 如果菜单项包含图标配置
+            if value.split('||')[1]
+              - var icon_value = trim(value.split('||')[1])
+              - var anima_value = value.split('||')[2] ? trim(value.split('||')[2]) : 'faa-tada'
+              //- 如果图标是 FontAwesome 图标
+              if icon_value.substring(0,2)=="fa"      
+                i(class=icon_value + ' ' + anima_value)
+              //- 如果图标是自定义 SVG 图标
+              else if icon_value.substring(0,4)=="icon"
+                svg.icon(aria-hidden="true" class=anima_value)
+                  use(xlink:href=`#`+ icon_value)
+              //- 如果图标是 Anzhiyu 图标
+              else if icon_value.substring(0,4)=="anzhiyu"
+                i.anzhiyufont(style="font-size: 0.9em;" class=icon_value + ' ' + anima_value)
+            //- 显示菜单项文本
+            span=' '+label
+      //- 如果 value 是对象（即它是一个多级菜单）
+      else
+        .menus_item
+          //- 菜单项不直接跳转，点击后显示子菜单
+          a.site-page(href='javascript:void(0);')
+            //- 如果菜单项包含图标配置
+            if label.split('||')[1]
+              - var icon_label = trim(label.split('||')[1])
+              - var anima_label = label.split('||')[2] ? trim(label.split('||')[2]) : 'faa-tada'
+              //- 如果图标是 FontAwesome 图标
+              if icon_label.substring(0,2)=="fa"      
+                i(class=icon_label + ' ' + anima_label)
+              //- 如果图标是自定义 SVG 图标
+              else if (icon_label.startsWith("icon"))
+                svg.icon(aria-hidden="true" class=anima_label)
+                  use(xlink:href=`#`+ icon_label)
+              //- 如果图标是 Anzhiyu 图标
+              else if (icon_label.startsWith("anzhiyu"))
+                i.anzhiyufont(style="font-size: 0.9em;" class=icon_label + ' ' + anima_label)
+            //- 显示菜单项文本
+            span=' '+ trim(label.split('||')[0])
+          //- 子菜单部分
+          ul.menus_item_child
+            //- 遍历子菜单的每个键值对（lab 为键，val 为值）
+            each val,lab in value
+              li
+                //- 生成子菜单项的链接，并使用 `url_for` 函数处理链接路径
+                a.site-page.child.faa-parent.animated-hover(href=url_for(trim(val.split('||')[0])))
+                  //- 如果子菜单项包含图标配置
+                  if val.split('||')[1]
+                    - var icon_val = trim(val.split('||')[1])
+                    - var anima_val = val.split('||')[2] ? trim(val.split('||')[2]) : 'faa-tada'
+                    //- 如果图标是 FontAwesome 图标
+                    if icon_val.substring(0,2)=="fa"      
+                      i(class=icon_val + ' ' + anima_val)
+                    //- 如果图标是自定义 SVG 图标
+                    else if (icon_val.startsWith("icon"))
+                      svg.icon(aria-hidden="true" class=anima_val)
+                        use(xlink:href=`#`+ icon_val)
+                    //- 如果图标是 Anzhiyu 图标
+                    else if (icon_val.startsWith("anzhiyu"))
+                      i.anzhiyufont(style="font-size: 0.9em;" class=icon_val + ' ' + anima_val)
+                  //- 显示子菜单项文本
+                  span=' '+ lab
+
+
+//- 代码解析：
+//- 菜单项结构：通过 theme.menu 遍历生成多级或单级菜单。
+//- 图标处理：根据 || 分隔符从字符串中提取菜单链接和图标，支持 FontAwesome、SVG 自定义图标和 Anzhiyu 字体图标。
+//- 菜单交互：单级菜单直接跳转，多级菜单支持子菜单的展开。

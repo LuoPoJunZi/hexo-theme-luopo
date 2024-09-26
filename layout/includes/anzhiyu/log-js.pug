@@ -1,0 +1,114 @@
+//- 获取配置中的作者名
+- let author = config.author
+
+//- 获取主题配置中的网站上线时间
+- let launch_time = theme.footer.runtime.launch_time
+
+//- 获取主题配置中的网站起始年份
+- let since = theme.footer.owner.since
+
+//- 获取标签的版本号
+- let version = get_version("tags")
+
+//- 嵌入脚本
+script.
+  //- 暂时消除控制台的输出日志
+  var HoldLog = console.log;
+
+  //- 将控制台的日志输出暂时替换为空函数，停止打印
+  console.log = function () {};
+
+  //- 获取当前的时间
+  let now1 = new Date();
+
+  //- 使用 queueMicrotask 在当前微任务队列中插入一个任务
+  queueMicrotask(() => {
+    //- 恢复 console.log 的功能，并使用之前保留的日志方法
+    const Log = function () {
+      HoldLog.apply(console, arguments);
+    };
+
+    //- 创建一个 Date 对象，并设置为网站的上线时间
+    const grt = new Date("#{launch_time}");
+
+    //- 当前时间加250毫秒，模拟时间的推进
+    now1.setTime(now1.getTime() + 250);
+
+    //- 计算当前时间与上线时间的差值，单位为天
+    const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+    const dnum = Math.floor(days); //- 取整，表示已经过了多少天
+
+    //- 定义一组ASCII艺术以及相关的提示文字
+    const ascll = [
+      `欢迎使用安知鱼主题`, //- 欢迎语
+      `君子之所愿, 愿赴汤蹈火`, //- 标语
+      `
+        ██╗     ██╗   ██╗████████╗████████╗████████╗
+        ██║     ██║   ██║██║   ██║██╔═══██║██║   ██║
+        ██║     ██║   ██║██║   ██║████████║██║   ██║ 
+        ██║     ██║   ██║██║   ██║██╔═════╝██║   ██║
+        ███████╗╚██████╔╝████████║██║      ████████║
+        ╚══════╝ ╚═════╝  ╚══════╝╚═╝       ╚══════╝          
+      `, //- ASCII艺术字符
+      "落魄1.0修改版", //- 版本说明
+      dnum, //- 已经过了多少天
+      "天", //- 单位，天
+      "©#{since} By 安知鱼 V#{version}", //- 网站版权信息，显示年份和版本号
+    ];
+
+    //- 定义另一组ASCII艺术，用于搞笑提示
+    const ascll2 = [
+      `NCC2-036`, //- 随机编号
+      `调用前置摄像头拍照成功，识别为【小笨蛋】.`, //- 搞笑的提示信息
+      `Photo captured: `, //- 模拟照片捕获
+      `🤪`, //- 搞怪表情符号
+    ];
+
+    //- 使用 setTimeout 延时输出第一组信息
+    setTimeout(
+      Log.bind(
+        console,
+        `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+        "color:#425AEF", //- 设置第一个字符串的颜色
+        "", //- 默认样式
+        "color:#425AEF", //- 第二个字符串的颜色
+        "color:#425AEF", //- 第三个字符串的颜色
+        "", //- 默认样式
+        "color:#425AEF", //- 第四个字符串的颜色
+        "" //- 默认样式
+      )
+    );
+
+    //- 延时输出第二组搞笑信息，并模拟显示图片
+    setTimeout(
+      Log.bind(
+        console,
+        `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+        "color:white; background-color:#4fd953", //- 设置第一个字符串的颜色和背景色
+        "", //- 默认样式
+        "", //- 默认样式
+        'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%' //- 背景图，模拟拍照效果
+      )
+    );
+
+    //- 输出欢迎信息
+    setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+    //- 输出网站的控制台警告，提示用户访问的是博客
+    setTimeout(
+      console.warn.bind(
+        console,
+        "%c ⚡ Powered by 安知鱼 %c 你正在访问 #{author} 的博客.",
+        "color:white; background-color:#f0ad4e", //- 设置警告的颜色和背景色
+        ""
+      )
+    );
+
+    //- 输出一个关于打开控制台的信息
+    setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+    //- 输出另一个警告信息，提示用户正在被监控（搞笑提示）
+    setTimeout(
+      console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+    );
+  });

@@ -1,0 +1,57 @@
+- 
+  //- 将页面标题中的单引号替换为转义字符，防止在 JS 中出现错误
+  const titleVal = pageTitle.replace(/'/ig,"\\'")
+
+  //- 定义一个变量用于存储是否启用代码高亮收缩功能
+  let isHighlightShrink
+  //- 如果主题配置中 highlight_shrink 为 'none'，将 isHighlightShrink 设置为 'undefined'
+  if (theme.highlight_shrink == 'none') isHighlightShrink = 'undefined'
+  //- 否则检查当前页面的配置，如果明确设置为 true 或 false，则使用页面的设置
+  else if (page.highlight_shrink === true || page.highlight_shrink === false) isHighlightShrink = page.highlight_shrink
+  //- 如果页面没有特别设置，使用主题中的配置
+  else isHighlightShrink = theme.highlight_shrink
+
+  //- 初始化一个变量，用于判断是否显示目录（Table of Contents, TOC）
+  var showToc = false
+  //- 如果侧边栏开启（theme.aside.enable），且页面未明确禁用侧边栏，则继续判断是否显示目录
+  if (theme.aside.enable && page.aside !== false) {
+    let tocEnable = false
+    //- 如果是文章页面，并且主题配置启用了文章的目录功能，则 tocEnable 为 true
+    if (is_post()) {
+      if (theme.toc.post) tocEnable = true
+    }
+    //- 如果是普通页面，并且主题配置启用了页面的目录功能，则 tocEnable 为 true
+    else if (is_page()) {
+      if (theme.toc.page) tocEnable = true
+    }
+    //- 根据页面的 toc 设置（true 或 false），以及是否启用了主题的目录功能，决定是否显示目录
+    const pageToc = page.toc === true || page.toc === false ? page.toc : tocEnable
+    //- 目录显示的条件是 toc 设置为 true，并且页面内容中有目录（或者页面是加密状态）
+    showToc = pageToc && (toc(page.content) !== '' || page.encrypt == true)
+  }
+-
+
+//- 配置页面的全局参数
+script#config-diff.
+  var GLOBAL_CONFIG_SITE = {
+    //- 网站标题
+    configTitle: '!{config.title}',
+    //- 当前页面的标题（已转义单引号）
+    title: '!{titleVal}',
+    //- 当前页面的 AI 处理状态（如果有 AI 功能）
+    postAI: '!{page.ai}',
+    //- 获取页面的摘要或描述
+    pageFillDescription: '!{get_page_fill_description()}',
+    //- 判断是否为文章页面
+    isPost: !{is_post()},
+    //- 判断是否为首页
+    isHome: !{is_home()},
+    //- 是否启用了代码高亮的收缩功能
+    isHighlightShrink: !{isHighlightShrink},
+    //- 是否显示目录
+    isToc: !{showToc},
+    //- 文章的最后更新时间
+    postUpdate: '!{full_date(page.updated)}',
+    //- 文章的主色调
+    postMainColor: '!{page.main_color}',
+  }

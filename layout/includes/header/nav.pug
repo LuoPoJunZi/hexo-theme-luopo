@@ -1,0 +1,97 @@
+//- 这是一个用于构建网站导航栏的代码模板，配合 theme 中的设置生成动态内容。
+
+//- 获取 theme 对象中的 darkmode 属性
+- const { darkmode } = theme
+
+nav#nav
+  #nav-group
+    //- 网站名称和导航菜单
+    span#blog_name
+      if theme.nav.enable
+        //- 返回主菜单按钮
+        .back-home-button
+          i.anzhiyufont.anzhiyu-icon-grip-vertical
+          .back-menu-list-groups
+            //- 遍历 theme.nav.menu，生成菜单组
+            each group in theme.nav.menu
+              .back-menu-list-group
+                //- 菜单组标题
+                .back-menu-list-title= group.title
+                //- 遍历菜单组中的每个 item，生成具体的菜单项
+                .back-menu-list
+                  each item in group.item
+                    a.back-menu-item(href=url_for(item.link), title=item.name)
+                      //- 显示菜单项图标
+                      img.back-menu-item-icon(src=item.icon alt=item.name)
+                      //- 显示菜单项名称
+                      span.back-menu-item-text= item.name
+
+      //- 网站标题链接到主页，快捷键为 "h"
+      a#site-name(href=url_for('/') accesskey="h")
+        .title #[=config.title]  //- 显示网站标题
+        i.anzhiyufont.anzhiyu-icon-house-chimney  //- 一个小房子图标
+
+      //- 显示时钟部件（如果启用）
+      if (theme.nav.clock)
+        !=partial('includes/anzhiyu/clock', {}, {cache: true})
+
+    //- 页面标题
+    div.mask-name-container
+      #name-container
+        a#page-name(href="javascript:anzhiyu.scrollToDest(0, 500)") PAGE_NAME
+
+    //- 菜单项的部分引入
+    #menus
+      !=partial('includes/header/menu_item', {}, {cache: true})
+
+    //- 导航右侧按钮
+    #nav-right
+      if theme.nav.travelling
+        //- 随机访问按钮
+        .nav-button.only-home#travellings_button(title='随机前往一个开往项目网站')
+          a.site-page(onclick='anzhiyu.totraveling()', title='随机前往一个开往项目网站', href='javascript:void(0);', rel='external nofollow', data-pjax-state='external')
+            i.anzhiyufont.anzhiyu-icon-train  //- 列车图标
+
+      //- 随机文章按钮
+      .nav-button#randomPost_button
+        a.site-page(onclick='toRandomPost()', title='随机前往一个文章', href='javascript:void(0);')
+          i.anzhiyufont.anzhiyu-icon-dice  //- 骰子图标
+
+      //- 搜索按钮（如果启用搜索功能）
+      if (theme.algolia_search.enable || theme.local_search.enable || theme.docsearch.enable)
+        div.nav-button#search-button
+          a.site-page.social-icon.search(href='javascript:void(0);', title='搜索🔍' accesskey="s")
+            i.anzhiyufont.anzhiyu-icon-magnifying-glass  //- 放大镜图标
+            span=' '+_p('search.title')
+
+      //- 中控台按钮（如果启用）
+      if theme.centerConsole.enable
+        input#center-console(type="checkbox")
+        label.widget(for="center-console" title=_p("中控台") onclick="anzhiyu.switchConsole();")
+          i.left
+          i.widget.center
+          i.widget.right
+
+      //- 引入中控台部分
+      !=partial('includes/anzhiyu/console', {}, {cache:true})
+
+      //- 回到顶部按钮
+      div.nav-button#nav-totop
+        a.totopbtn(href='javascript:void(0);')
+          i.anzhiyufont.anzhiyu-icon-arrow-up  //- 向上箭头图标
+          span#percent(onclick="anzhiyu.scrollToDest(0,500)") 0
+
+      //- 菜单切换按钮
+      #toggle-menu
+        a.site-page(href='javascript:void(0);' title="切换")
+          i.anzhiyufont.anzhiyu-icon-bars  //- 菜单图标
+
+
+//- 代码解析：
+//- 导航栏基本结构：nav#nav 是整个导航栏的外部容器，包含了博客名称、菜单、以及右侧的功能按钮。
+//- 博客名称与返回主菜单：#blog_name 部分会显示博客的名称，并且提供一个返回主菜单的按钮，用户可以点击展开菜单。
+//- 菜单组与菜单项：遍历 theme.nav.menu，生成每个菜单组，显示其标题和对应的菜单项。菜单项包含图标和名称，点击后跳转到对应的链接。
+//- 搜索与随机访问：如果启用了搜索功能，会显示一个搜索按钮，用户可以通过此按钮打开搜索界面。另外，随机访问文章和“开往项目”的功能按钮可以让用户随意浏览不同的内容。
+//- 中控台：如果主题启用了中控台功能，可以通过点击切换中控台的可见状态。
+//- 回到顶部与菜单切换：提供一个回到顶部的按钮，点击后页面会平滑滚动至顶部。最右侧的菜单切换按钮可以让用户展开或收起导航菜单。
+//- 图标系统：该导航栏使用了 anzhiyufont 字体图标库，通过图标与文本的组合丰富了用户体验。例如房屋、火车、骰子、放大镜等图标为用户提供了更直观的操作提示。

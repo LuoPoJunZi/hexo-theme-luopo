@@ -1,0 +1,120 @@
+//- 从主题配置中获取翻译功能
+- const { translate } = theme
+
+//- 右键菜单的容器
+#rightMenu
+	//- 第一组小型右键菜单项（导航控制相关）
+	.rightMenu-group.rightMenu-small
+		//- 返回上一页按钮
+		.rightMenu-item#menu-backward
+			i.anzhiyufont.anzhiyu-icon-arrow-left
+		//- 前进到下一页按钮
+		.rightMenu-item#menu-forward
+			i.anzhiyufont.anzhiyu-icon-arrow-right
+		//- 刷新页面按钮
+		.rightMenu-item#menu-refresh
+			i.anzhiyufont.anzhiyu-icon-arrow-rotate-right(style="font-size: 1rem;")
+		//- 回到页面顶部按钮
+		.rightMenu-item#menu-top
+			i.anzhiyufont.anzhiyu-icon-arrow-up
+
+	//- 第二组右键菜单项（文本、链接、图片操作相关）
+	.rightMenu-group.rightMenu-line.rightMenuPlugin
+		//- 复制选中文本按钮
+		.rightMenu-item#menu-copytext
+			i.anzhiyufont.anzhiyu-icon-copy
+			span 复制选中文本
+		//- 粘贴文本按钮
+		.rightMenu-item#menu-pastetext
+			i.anzhiyufont.anzhiyu-icon-paste
+			span 粘贴文本
+		//- 引用选中文本到评论
+		a.rightMenu-item#menu-commenttext
+			i.anzhiyufont.anzhiyu-icon-comment-medical
+			span 引用到评论
+		//- 新窗口打开链接按钮
+		.rightMenu-item#menu-newwindow
+			i.anzhiyufont.anzhiyu-icon-window-restore
+			span 新窗口打开
+		//- 复制链接地址按钮
+		.rightMenu-item#menu-copylink
+			i.anzhiyufont.anzhiyu-icon-link
+			span 复制链接地址
+		//- 复制图片按钮
+		.rightMenu-item#menu-copyimg
+			i.anzhiyufont.anzhiyu-icon-images
+			span 复制此图片
+		//- 下载图片按钮
+		.rightMenu-item#menu-downloadimg
+			i.anzhiyufont.anzhiyu-icon-download
+			span 下载此图片
+		//- 新窗口打开图片按钮
+		.rightMenu-item#menu-newwindowimg
+			i.anzhiyufont.anzhiyu-icon-window-restore
+			span 新窗口打开图片
+		//- 站内搜索按钮
+		.rightMenu-item#menu-search
+			i.anzhiyufont.anzhiyu-icon-magnifying-glass
+			span 站内搜索
+		//- 使用百度搜索按钮
+		.rightMenu-item#menu-searchBaidu
+			i.anzhiyufont.anzhiyu-icon-magnifying-glass
+			span 百度搜索
+		//- 播放音乐按钮
+		.rightMenu-item#menu-music-toggle
+			i.anzhiyufont.anzhiyu-icon-play
+			span 播放音乐
+		//- 切换到上一首音乐按钮
+		.rightMenu-item#menu-music-back
+			i.anzhiyufont.anzhiyu-icon-backward
+			span 切换到上一首
+		//- 切换到下一首音乐按钮
+		.rightMenu-item#menu-music-forward
+			i.anzhiyufont.anzhiyu-icon-forward
+			span 切换到下一首
+		//- 显示所有播放列表按钮（从主题配置中获取链接）
+		- const nav_music_all_playlist = theme.nav_music.all_playlist
+		.rightMenu-item#menu-music-playlist(onclick=`window.open("${nav_music_all_playlist}", "_blank");`, style='display: none;')
+			i.anzhiyufont.anzhiyu-icon-radio
+			span 查看所有歌曲
+		//- 复制当前歌曲名称按钮
+		.rightMenu-item#menu-music-copyMusicName
+			i.anzhiyufont.anzhiyu-icon-copy
+			span 复制歌名
+
+	//- 第三组右键菜单项（网站导航相关）
+	.rightMenu-group.rightMenu-line.rightMenuOther
+		//- 随便逛逛（随机文章）按钮
+		a.rightMenu-item.menu-link#menu-randomPost
+			i.anzhiyufont.anzhiyu-icon-shuffle
+			span 随便逛逛
+		//- 前往博客分类页面按钮
+		a.rightMenu-item.menu-link(href='/categories/')
+			i.anzhiyufont.anzhiyu-icon-cube
+			span 博客分类
+		//- 前往文章标签页面按钮
+		a.rightMenu-item.menu-link(href='/tags/')
+			i.anzhiyufont.anzhiyu-icon-tags
+			span 文章标签
+
+	//- 第四组右键菜单项（其它功能）
+	.rightMenu-group.rightMenu-line.rightMenuOther
+		//- 复制页面地址按钮
+		a.rightMenu-item#menu-copy(href='javascript:void(0);')
+			i.anzhiyufont.anzhiyu-icon-copy
+			span 复制地址
+		//- 关闭或开启热评弹幕按钮
+		a.rightMenu-item#menu-commentBarrage(href='javascript:void(0);')
+			i.anzhiyufont.anzhiyu-icon-message
+			span.menu-commentBarrage-text 关闭热评
+		//- 切换深色模式按钮
+		a.rightMenu-item#menu-darkmode(href='javascript:void(0);')
+			i.anzhiyufont.anzhiyu-icon-circle-half-stroke
+			span.menu-darkmode-text 深色模式
+		//- 翻译功能按钮，显示默认翻译信息
+		a.rightMenu-item#menu-translate(href='javascript:void(0);')
+			i.anzhiyufont.anzhiyu-icon-language
+			span=translate.rightMenuMsgDefault
+
+//- 右键菜单的遮罩层
+#rightmenu-mask

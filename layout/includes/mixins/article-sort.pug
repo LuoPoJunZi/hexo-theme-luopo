@@ -1,0 +1,66 @@
+//- 定义一个 mixin，名为 articleSort，接收两个参数：posts（文章列表）和 current（当前页码）
+mixin articleSort(posts, current)
+  //- 创建一个容器，类名为 article-sort，用于包装文章排序的内容
+  .article-sort
+    //- 声明一个变量 year，用于存储当前处理的年份
+    - var year
+    //- 声明一个变量 modifiedUrl，用于存储修改后的文章封面 URL
+    - let modifiedUrl
+    //- 遍历 posts 数组，处理每篇文章
+    - posts.each(function (article, post_index) {
+      //- 获取文章的年份（YYYY 格式）
+      - let tempYear = date(article.date, 'YYYY')
+      //- 检查文章是否有封面，如果没有封面或者主题未启用封面，则为 no_cover 赋值
+      - let no_cover = article.cover === false || !theme.cover.archives_enable ? 'no-article-cover' : ''
+      //- 获取文章标题，如果没有标题，则使用 'no_title' 作为默认值
+      - let title = article.title || _p('no_title')
+      //- 获取页面缩略图后缀
+      - let pageThumbnailSuffix = theme.pageThumbnailSuffix
+      //- 判断是否需要修改封面 URL
+      if (pageThumbnailSuffix && theme.pageThumbnailSuffix.startsWith("!") && article.cover && article.cover.includes("!"))
+        //- 如果封面 URL 中包含 "!"，则获取修改后的封面 URL
+        - let imageUrl = article.cover.substring(0, article.cover.indexOf("!"))
+        - modifiedUrl = imageUrl + pageThumbnailSuffix //- 修改后的封面 URL
+      else
+        //- 如果不需要修改，直接使用原始封面 URL
+        - modifiedUrl = article.cover
+      //- 如果当前文章的年份与前一篇文章的年份不同，则输出年份
+      if tempYear !== year
+        - year = tempYear //- 更新当前年份
+        //- 创建一个新的年份项
+        .article-sort-item.year
+          span= year //- 显示年份
+      //- 创建一个文章项
+      .article-sort-item(class=no_cover) //- 如果没有封面，则添加 no_cover 类
+        //- 如果文章有封面且主题启用了封面，则输出封面图片
+        if article.cover && theme.cover.archives_enable
+          a.article-sort-item-img(href=url_for(article.path) title=title) //- 设置链接到文章的路径
+            img(src=url_for(modifiedUrl) alt=title onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'`) //- 设置图片源和错误处理
+        //- 创建文章信息的容器
+        .article-sort-item-info
+          a.article-sort-item-title(href=url_for(article.path) title=title)= title //- 输出文章标题，链接到文章路径
+          span.article-sort-item-index= (current - 1) * config.per_page + post_index + 1 //- 显示文章索引
+          .article-meta-wrap
+            //- 如果主题启用了文章标签，并且文章中有标签，则输出标签信息
+            if (theme.post_meta.page.tags && article.tags.data.length > 0)
+              span.article-sort-item-tags
+                //- 遍历文章的标签数组，输出每个标签
+                each item, index in article.tags.data
+                  a(href=url_for(item.path) tabindex="-1").article-meta__tags 
+                    span 
+                      i.anzhiyufont.anzhiyu-icon-hashtag //- 显示标签图标
+                      =item.name //- 显示标签名称
+            //- 创建文章时间的容器
+            .article-sort-item-time
+              i.anzhiyufont.anzhiyu-icon-calendar-alt //- 显示时间图标
+              time.post-meta-date-created(datetime=date_xml(article.date) title=_p('post.created') + ' ' + full_date(article.date))= date(article.date, config.date_format) //- 输出文章创建时间
+    - }) //- 结束 posts.each 的遍历
+
+
+
+//- 注释解析：
+//- mixin 定义：定义一个 articleSort 的 mixin，用于处理和渲染文章列表，接收文章数组 posts 和当前页码 current 作为参数。
+//- 年份处理：通过变量 year 来管理并显示文章的年份，只在年份变化时输出。
+//- 封面图处理：检查文章的封面状态，判断是否需要修改封面 URL，并根据条件输出适当的封面。
+//- 文章信息输出：为每篇文章创建一个 HTML 结构，包含标题、索引、标签和创建时间等信息，并处理无封面的情况。
+//- 错误处理：为图片加载提供错误处理，确保在封面图片加载失败时，使用默认错误图片。

@@ -1,0 +1,76 @@
+//- 链接到 PWA 的 manifest 文件
+link(rel="manifest" href=url_for(theme.pwa.manifest))
+
+//- 如果主题中定义了 PWA 的主题颜色
+if(theme.pwa.theme_color) 
+  //- 设置 Microsoft Tile 的颜色
+  meta(name="msapplication-TileColor" content=theme.pwa.theme_color)
+
+//- 如果主题中定义了掩码图标
+if(theme.pwa.mask_icon)
+  //- 添加掩码图标链接
+  link(rel="mask-icon" href=url_for(theme.pwa.mask_icon) color="#5bbad5")
+
+//- 如果主题中定义了苹果触摸图标
+if(theme.pwa.apple_touch_icon) 
+  //- 添加苹果触摸图标链接
+  link(rel="apple-touch-icon" sizes="180x180" href=url_for(theme.pwa.apple_touch_icon))
+  //- 添加预先处理的苹果触摸图标链接
+  link(rel="apple-touch-icon-precomposed", sizes="180x180" href=url_for(theme.pwa.apple_touch_icon))
+
+//- 如果主题中定义了 32x32 的 favicon
+if(theme.pwa.favicon_32_32) 
+  //- 添加 32x32 的 favicon 图标链接
+  link(rel="icon" type="image/png" sizes="32x32" href=url_for(theme.pwa.favicon_32_32))
+
+//- 如果主题中定义了 16x16 的 favicon
+if(theme.pwa.favicon_16_16)
+  //- 添加 16x16 的 favicon 图标链接
+  link(rel="icon" type="image/png" sizes="16x16" href=url_for(theme.pwa.favicon_16_16))
+
+//- 如果主题中定义了书签图标
+if(theme.pwa.bookmark_icon)
+  //- 添加书签图标链接
+  link(rel="bookmark", href=url_for(theme.pwa.bookmark_icon))
+
+//- 如果启用了启动图像
+if(theme.pwa.startup_image_enable)
+  //- 添加各种设备和方向下的苹果启动图像链接
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2048-2732.jpg", media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2732-2048.jpg", media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1668-2388.jpg", media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2388-1668.jpg", media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1536-2048.jpg", media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2048-1536.jpg", media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1668-2224.jpg", media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2224-1668.jpg", media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1620-2160.jpg", media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2160-1620.jpg", media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1290-2796.jpg", media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2796-1290.jpg", media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1179-2556.jpg", media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2556-1179.jpg", media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1284-2778.jpg", media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2778-1284.jpg", media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1170-2532.jpg", media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2532-1170.jpg", media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1125-2436.jpg", media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2436-1125.jpg", media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1242-2688.jpg", media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-2688-1242.jpg", media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-828-1792.jpg", media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)")
+  link(rel="apple-touch-startup-image", href="/img/siteicon/apple-splash-1792-828.jpg", media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)")
+
+//- 注册 Service Worker 的代码（已注释）
+//- script.
+//-   if ('serviceWorker' in navigator) {
+//-     if (navigator.serviceWorker.controller) {
+//-       navigator.serviceWorker.addEventListener('controllerchange', function() {
+//-         location.reload()
+//-       })
+//-     }
+//-     window.addEventListener('load', function() {
+//-       navigator.serviceWorker.register('/service-worker.js')
+//-     })
+//-   }
+

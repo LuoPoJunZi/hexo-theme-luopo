@@ -1,0 +1,21 @@
+//- 判断 theme.preloader.source 的值来选择加载动画的模板
+//- 如果 source 值为 1，包含 fullpage-loading.pug 文件
+if theme.preloader.source === 1
+  include ./fullpage-loading.pug
+
+//- 如果 source 值为 2，包含 pace.pug 文件
+else if theme.preloader.source === 2
+  include ./pace.pug
+
+//- 如果 source 不是 1 或 2，默认同时包含 fullpage-loading.pug 和 pace.pug 文件
+else
+  include ./fullpage-loading.pug
+  include ./pace.pug
+
+
+//- 注释解析：
+//- if 和 else if 条件判断：根据 theme.preloader.source 的值来决定包含哪一个加载动画模板。
+//- source === 1 时包含 fullpage-loading.pug。
+//- source === 2 时包含 pace.pug。
+//- else 默认处理：如果 source 的值既不是 1 也不是 2，那么同时包含 fullpage-loading.pug 和 pace.pug 文件，确保加载效果的多样性。
+//- 通过这种结构，您可以根据用户的配置选择不同的加载动画效果，并在缺省情况下加载两种动画。

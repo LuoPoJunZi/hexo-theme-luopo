@@ -1,0 +1,66 @@
+//- 声明变量并赋值，获取页面填充描述
+- let pageFillDescription = get_page_fill_description()
+
+//- 获取主题配置中与AI摘要相关的gpt名称
+- let gptName = theme.post_head_ai_description.gptName
+
+//- 获取AI摘要的模式（例如天理模式或其他模式）
+- let mode = theme.post_head_ai_description.mode
+
+//- 获取是否显示切换按钮的配置
+- let switchBtn = theme.post_head_ai_description.switchBtn
+
+//- 如果页面有摘要描述，并且页面存在AI功能
+if (pageFillDescription && page.ai)
+  //- 创建一个用于显示AI摘要的容器
+  .post-ai-description
+    //- 显示AI摘要的标题部分
+    .ai-title
+      //- 使用安知鱼字体的Bilibili图标
+      i.anzhiyufont.anzhiyu-icon-bilibili
+
+      //- 显示AI摘要的标题文字“AI-摘要”
+      .ai-title-text AI-摘要
+
+      //- 如果启用了切换按钮功能，显示切换按钮
+      if (switchBtn)
+        //- 切换按钮的ID为ai-Toggle，文字为“切换”
+        #ai-Toggle 切换
+
+      //- 使用安知鱼字体的旋转箭头图标
+      i.anzhiyufont.anzhiyu-icon-arrow-rotate-right
+
+      //- 使用安知鱼字体的朗读图标，鼠标悬停时显示“朗读摘要”的提示
+      i.anzhiyufont.anzhiyu-icon-circle-dot(title="朗读摘要")
+
+      //- 显示AI模式标签
+      #ai-tag
+        //- 如果模式为"tianli"，则显示“Tianli GPT”
+        if mode == "tianli"
+          = "Tianli GPT"
+        //- 否则显示gptName变量的值，后缀为“GPT”
+        else
+          = gptName + " GPT"
+
+    //- 显示AI的初始化说明
+    .ai-explanation AI初始化中...
+
+    //- 按钮容器，包含与AI交互的选项
+    .ai-btn-box
+      //- AI按钮项，提供自我介绍功能
+      .ai-btn-item 介绍自己 🙈
+      
+      //- AI按钮项，生成当前文章的简介
+      .ai-btn-item 生成本文简介 👋
+      
+      //- AI按钮项，推荐与当前文章相关的文章
+      .ai-btn-item 推荐相关文章 📖
+      
+      //- AI按钮项，前往主页
+      .ai-btn-item 前往主页 🏠
+      
+      //- 特定按钮，前往天理博客的爱发电页面进行购买
+      .ai-btn-item#go-tianli-blog 前往爱发电购买
+
+    //- 引入用于AI摘要功能的JavaScript脚本，支持PJAX
+    script(data-pjax src=url_for(theme.asset.ai_abstract_js))

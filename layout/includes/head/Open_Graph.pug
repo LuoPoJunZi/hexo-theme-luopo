@@ -1,0 +1,31 @@
+//- 判断是否启用 Open Graph 元数据
+if theme.Open_Graph_meta
+  //- 根据当前页面类型设置内容类型，如果是文章则为 'article'，否则为 'website'
+  - let contentType = is_post() ? 'article' : 'website'
+  //- 获取页面封面图像或主题头像的完整 URL，如果没有则设置为空字符串
+  - let metaImage = (page.cover || theme.avatar.img) ? full_url_for(page.cover || theme.avatar.img) : ''
+
+  //- 设置 Open Graph 元数据
+  meta(property="og:type", content=contentType) //- 页面类型
+  meta(property="og:title", content=pageTitle) //- 页面标题
+  meta(property="og:url", content=theme.post_copyright.decode ? decodeURI(url) : url) //- 页面 URL
+  meta(property="og:site_name", content=config.title) //- 网站名称
+  meta(property="og:description", content=page_description()) //- 页面描述
+  meta(property="og:locale", content=config.language) //- 页面语言
+  meta(property="og:image", content=metaImage) //- 页面图像
+  meta(property="article:author" content=config.author) //- 文章作者
+  meta(property="article:tag" content=config.keywords) //- 文章标签
+
+  //- 设置 Twitter 元数据
+  meta(name="twitter:card", content="summary") //- Twitter 卡片类型
+  meta(name="twitter:image", content=metaImage) //- Twitter 图像
+
+//- 设置页面的常规描述
+meta(name="description" content=page_description()) //- 页面描述
+
+//- 代码功能解释：
+//- Open Graph 元数据：用于社交媒体平台（如 Facebook、Twitter）显示页面的预览信息。
+//- 内容类型：根据当前页面类型（文章或网站）设置 og:type。
+//- 图像处理：确定用于 Open Graph 和 Twitter 的图像，优先使用页面封面图像或主题头像。
+//- 元数据设置：为 Open Graph 和 Twitter 相关的元数据设置属性，包括标题、URL、描述、语言、作者和标签。
+//- 页面描述：设置常规页面描述，用于搜索引擎优化（SEO）和其他用途。

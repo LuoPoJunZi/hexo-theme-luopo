@@ -1,0 +1,151 @@
+//- 声明一个变量 maxDate，初始化为 0，用于存储文章的最大日期
+- let maxDate = 0
+//- 遍历站点的文章数据
+each item in site.posts.data
+  //- 如果当前文章的日期大于 maxDate，则更新 maxDate
+  if item.date > maxDate
+    - maxDate = item.date
+
+//- 定义一个 mixin，名为 postUI，接收一个参数：posts（文章列表）
+mixin postUI(posts)
+  //- 遍历 page.posts.data，获取每篇文章和其索引
+  each article, index in page.posts.data
+    //- 获取文章的链接，如果没有则使用文章路径
+    - let link = article.link || article.path
+    //- 创建一个 div 元素，包含文章信息，点击时使用 PJAX 加载文章
+    div(class = (index === 0 ? 'recent-post-item lastestpost-item' : 'recent-post-item') onclick=`pjax.loadUrl('${url_for(link)}')`)
+      - //- 初始化一些变量以存储文章信息
+      - let title = article.title || _p('no_title') //- 获取文章标题，如果没有则使用默认标题
+      const position = theme.cover.position //- 获取封面显示位置
+      //- 根据封面位置选择 left 或 right
+      let leftOrRight = position === 'both'
+        ? index%2 == 0 ? 'left' : 'right'
+        : position === 'left' ? 'left' : 'right'
+      let post_cover = article.cover //- 获取文章封面
+      let no_cover = article.cover === false || !theme.cover.index_enable ? 'no-cover' : '' //- 检查是否有封面
+
+      //- 检查当前文章是否是最新文章
+      - const new_post = is_current('/') && (maxDate === article.date)
+
+      //- 如果有封面并且启用了封面，则输出封面部分
+      if post_cover && theme.cover.index_enable
+        .post_cover(class=leftOrRight) //- 根据位置类选择 left 或 right
+          a(href=url_for(link) title=title style='display: flex;height: 100%;') //- 设置链接到文章的路径
+            img.post_bg(src=url_for(post_cover) onerror=`this.onerror=null;this.src='`+ url_for(theme.error_img.post_page) + `'` alt=title style='pointer-events: none') //- 输出封面图片，包含错误处理
+
+      .recent-post-info(class=no_cover) //- 输出文章信息部分
+        .recent-post-info-top
+          .recent-post-info-top-tips
+            //- 如果在首页且文章为置顶或加精，则显示标记
+            if (is_home() && (article.top || article.sticky > 0))
+              span.article-meta.sticky-warp
+                i.anzhiyufont.anzhiyu-icon-thumbtack.sticky //- 置顶图标
+                span.sticky= _p('sticky') //- 置顶文字
+            //- 如果启用分类且有分类数据，输出分类信息
+            if (theme.post_meta.page.categories && article.categories.data.length > 0)
+              each item, index in article.categories.data
+                .article-categories-original=item.name //- 输出分类名称
+            //- 如果是最新文章，标记为“最新”
+            if new_post
+              span.newPost 最新 //- 新文章标记
+            //- 显示未读标记
+            a.unvisited-post(href=url_for(link) title=title) 未读
+          //- 输出文章标题，链接到文章的路径
+          a.article-title(href=url_for(link) title=title)= title 
+        .article-meta-wrap //- 包裹文章元信息
+          //- 如果启用日期显示
+          if (theme.post_meta.page.date_type)
+            span.post-meta-date //- 日期容器
+              //- 如果日期类型为“both”，则显示创建和更新时间
+              if (theme.post_meta.page.date_type === 'both')
+                i.anzhiyufont.anzhiyu-icon-calendar-alt(style=`${theme.post_meta.page.date_format==="simple" ? "display:none":""}`) //- 创建时间图标
+                span.article-meta-label=_p('post.created') //- 创建时间标签
+                //- 输出创建时间
+                time.post-meta-date-created(datetime=date_xml(article.date) title=_p('post.created') + ' ' + full_date(article.date) time=full_date(article.date))=date(article.date, config.date_format)
+                span.article-meta-separator //- 分隔符
+                i.anzhiyufont.anzhiyu-icon-history(style=`font-size: 15px; ${theme.post_meta.page.date_format==="simple" ? "display:none":""}`) //- 更新时间图标
+                span.article-meta-label=_p('post.updated') //- 更新时间标签
+                //- 输出更新时间
+                time.post-meta-date-updated(datetime=date_xml(article.updated) title=_p('post.updated') + ' ' + full_date(article.updated) time=full_date(article.updated))=date(article.updated, config.date_format)
+              else
+                //- 处理单独的创建或更新时间
+                - let data_type_updated = theme.post_meta.page.date_type === 'updated' //- 判断当前日期类型
+                - let date_type = data_type_updated ? 'updated' : 'date' //- 设置当前日期类型
+                - let date_type_other = data_type_updated ? 'date' : 'updated' //- 设置另一个日期类型
+                - let date_icon = data_type_updated ? 'anzhiyu-icon-history' :'anzhiyu-icon-calendar-days' //- 设置图标
+                - let date_title = data_type_updated ? _p('post.updated') : _p('post.created') //- 设置标题
+                - let date_title_other = data_type_updated ? _p('post.created') : _p('post.updated') //- 设置另一个标题
+                i.anzhiyufont(class=date_icon style=`font-size: 15px; ${theme.post_meta.page.date_format==="simple" ? "display:none":""}`) //- 输出日期图标
+                span.article-meta-label=date_title //- 输出日期标签
+                //- 输出日期信息
+                time(datetime=date_xml(article[date_type]) title=date_title + ' ' + full_date(article[date_type]) time=full_date(article[date_type]))=date(article[date_type], config.date_format)
+                time(datetime=date_xml(article[date_type_other]), class="time_hidden", title=date_title_other + ' ' + full_date(article[date_type_other]) time=full_date(article[date_type_other]))=date(article[date_type_other], config.date_format)
+          //- 如果启用标签且有标签数据，输出标签信息
+          if (theme.post_meta.page.tags && article.tags.data.length > 0)
+            span.article-meta.tags //- 标签容器
+              each item, index in article.tags.data
+                a(href=url_for(item.path) event.cancelbubble onclick="window.event.cancelBubble=true;").article-meta__tags //- 输出标签链接
+                  span 
+                    i.anzhiyufont.anzhiyu-icon-hashtag //- 标签图标
+                    =item.name //- 标签名称
+
+          //- 计数模块 mixin
+          mixin countBlockInIndex
+            - needLoadCountJs = true //- 标识需要加载评论统计 JS
+            span.article-meta
+              span.article-meta-separator //- 分隔符
+              i.anzhiyufont.anzhiyu-icon-comments //- 评论图标
+              if block
+                block //- 输出传入的块
+              span.article-meta-label= ' ' + _p('card_post_count') //- 输出评论数标签
+
+          //- 如果启用评论统计，输出对应的评论数量
+          if theme.comments.card_post_count
+            case theme.comments.use[0] //- 根据使用的评论系统选择
+              when 'Valine'
+                +countBlockInIndex //- 加载评论统计模块
+                  a(href=url_for(link) + '#post-comment') //- 评论链接
+                    span.valine-comment-count(data-xid=url_for(link)) //- Valine 评论计数
+                      i.anzhiyufont.anzhiyu-icon-spinner.anzhiyu-spin //- 加载图标
+              when 'Waline'
+                +countBlockInIndex //- 加载评论统计模块
+                  a(href=url_for(link) + '#post-comment') //- 评论链接
+                    span.waline-comment-count(id=url_for(link)) //- Waline 评论计数
+                      i.anzhiyufont.anzhiyu-icon-spinner.anzhiyu-spin //- 加载图标
+              when 'Twikoo'
+                +countBlockInIndex //- 加载评论统计模块
+                  a.twikoo-count(href=url_for(link) + '#post-comment' tabindex="-1") //- 评论链接
+                    i.anzhiyufont.anzhiyu-icon-spinner.anzhiyu-spin //- 加载图标
+              when 'Artalk'
+                +countBlockInIndex //- 加载评论统计模块
+                  a(href=url_for(link) + '#post-comment') //- 评论链接
+                    span.artalk-count(data-page-key=url_for(link)) //- Artalk 评论计数
+                      i.anzhiyufont.anzhiyu-icon-spinner.anzhiyu-spin //- 加载图标
+
+        //- 在首页显示文章介绍
+        case theme.index_post_content.method //- 根据主题设置的文章内容方法选择
+          when false
+            - break //- 不显示内容
+          when 1
+            .content!= article.description //- 直接显示文章描述
+          when 2
+            //- 如果有描述则显示
+            if article.description
+              .content!= article.description //- 显示描述
+            else
+              //- 如果没有描述，则提取文章内容的前部分
+              - const content = strip_html(article.content)
+              - let expert = content.substring(0, theme.index_post_content.length) //- 获取截断内容
+              - content.length > theme.index_post_content.length ? expert += ' ...' : '' //- 根据长度决定是否添加省略号
+              .content!= expert //- 显示截断内容
+          default
+            //- 默认处理，截取文章内容
+            - const content = strip_html(article.content)
+            - let expert = content.substring(0, theme.index_post_content.length) //- 获取截断内容
+            - content.length > theme.index_post_content.length ? expert += ' ...' : '' //- 根据长度决定是否添加省略号
+            .content!= expert //- 显示截断内容
+
+    //- 如果启用了广告并且到达特定索引，则插入广告
+    if theme.ad && theme.ad.index
+      if (index + 1) % 3 == 0
+        .recent-post-item.ads-wrap!=theme.ad.index //- 显示广告

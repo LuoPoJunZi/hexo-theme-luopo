@@ -1,0 +1,27 @@
+//- noscript 标签用于在浏览器禁用 JavaScript 时显示的内容
+noscript. 
+  //- 定义样式，确保在禁用 JavaScript 的情况下，页面元素的可见性和布局正常
+  <style type="text/css">
+    //- 导航栏的透明度设置为 1，确保其完全可见
+    #nav {
+      opacity: 1
+    }
+    //- 确保所有在 justified-gallery 中的图片完全可见
+    .justified-gallery img {
+      opacity: 1
+    }
+
+    //- 使最近文章和文章元数据中的时间戳始终显示为行内元素
+    #recent-posts time,
+    #post-meta time {
+      display: inline !important
+    }
+  </style>
+
+
+//- 代码功能解释：
+//- noscript 标签：当用户的浏览器禁用了 JavaScript 时，显示该标签内的内容。
+//- 样式定义：
+//- 设置导航栏的透明度为 1，使其完全可见。
+//- 确保在使用 justified-gallery 的图像元素完全可见。
+//- 强制最近文章和文章元数据中的时间戳以行内元素的形式显示，以保持布局的一致性。
