@@ -14,6 +14,9 @@
 
 <p align="center">🇨🇳 中文简体  |  <a title="English" href="README_EN.md">🇬🇧 English</a></p>
 
+
+## 注意：这是安知鱼大佬的博客代码，这里只是做了一些注释！
+
 预览: 👍 [AnZhiYu](https://blog.anheyu.com/) || 🤞 [AnZhiYu](https://index.anheyu.com/)
 
 文档: 📖 [anzhiyu Docs](https://docs.anheyu.com/)
