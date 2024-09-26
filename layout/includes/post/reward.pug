@@ -1,0 +1,24 @@
+//- 奖励部分，点击时调用 anzhiyu.addRewardMask() 函数
+.post-reward(onclick='anzhiyu.addRewardMask()') 
+  .reward-button.button--animated(title='赞赏作者') //- 赞赏按钮
+    i.anzhiyufont.anzhiyu-icon-hand-heart-fill //- 图标
+    | 打赏作者 //- 按钮文本
+
+  .reward-main //- 奖励主容器
+    .reward-all //- 所有奖励的容器
+      span.reward-title 感谢你赐予我前进的力量 //- 奖励标题
+      ul.reward-group //- 奖励二维码组
+        each item in theme.reward.QR_code //- 遍历每个奖励二维码项
+          - var clickTo = item.link ? item.link : item.img //- 设置点击链接，如果有链接则使用链接，否则使用二维码图片
+          li.reward-item //- 奖励项
+            a(href=url_for(clickTo) target='_blank') //- 奖励项链接
+              img.post-qr-code-img(src=url_for(item.img) alt=item.text) //- 二维码图片
+            .post-qr-code-desc=item.text //- 二维码描述文本
+
+      //- 奖励主按钮，链接到赞赏者名单
+      a.reward-main-btn(href='/about/#about-reward' target='_blank') 
+        .reward-text 赞赏者名单 //- 奖励者名单文本
+        .reward-dec 因为你们的支持让我意识到写文章的价值🙏 //- 奖励说明
+
+//- 关闭奖励框的容器，点击时调用 anzhiyu.removeRewardMask() 函数，初始状态为隐藏
+#quit-box(onclick="anzhiyu.removeRewardMask()" style="display: none") 

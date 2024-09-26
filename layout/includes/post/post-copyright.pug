@@ -1,0 +1,64 @@
+//- 如果启用了版权设置并且页面的版权不等于 false
+if theme.post_copyright.enable && page.copyright !== false
+  - let author = page.copyright_author || config.author //- 获取版权作者，如果未指定，则使用配置中的作者
+  - let url = page.copyright_url || page.permalink //- 获取版权链接，如果未指定，则使用页面的永久链接
+  - let info = page.copyright_info || _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title) //- 获取版权信息，如果未指定，则使用默认版权内容
+  .post-copyright //- 版权容器
+    .copyright-cc-box //- 版权图标盒子
+      i.anzhiyufont.anzhiyu-icon-copyright //- 版权图标
+    .post-copyright__author_box //- 版权作者盒子
+      - let copyright_author_img_back = theme.post_copyright.copyright_author_img_back ? theme.post_copyright.copyright_author_img_back : theme.avatar.img //- 获取版权作者头像的背景图，如果未指定则使用默认头像
+      - let copyright_author_img_front = theme.post_copyright.copyright_author_img_front ? theme.post_copyright.copyright_author_img_front : theme.avatar.img //- 获取版权作者头像的前景图，如果未指定则使用默认头像
+      - let copyright_author_link = theme.post_copyright.copyright_author_link ? theme.post_copyright.copyright_author_link : '/' //- 获取版权作者链接，如果未指定则使用根链接
+      a.post-copyright__author_img(href=url_for(copyright_author_link) title='头像') //- 版权作者头像链接
+        img.post-copyright__author_img_back(src=url_for(copyright_author_img_back) title='头像' alt='头像') //- 显示版权作者背景头像
+        img.post-copyright__author_img_front(src=url_for(copyright_author_img_front) title="头像" alt='头像') //- 显示版权作者前景头像
+      .post-copyright__author_name=author //- 显示版权作者名称
+      .post-copyright__author_desc=config.subtitle //- 显示版权作者描述
+    .post-copyright__post__info //- 文章版权信息容器
+      if (page.copyright_author && page.copyright_author !== config.author) //- 如果页面有版权作者并且不是配置中的作者
+        a.post-copyright__reprint(title="该文章为转载文章，注意版权协议" href=url_for(url)) 转载 //- 显示转载链接
+      else
+        a.post-copyright__original(title="该文章为原创文章，注意版权协议" href=url_for(url)) 原创 //- 显示原创链接
+      a.post-copyright-title //- 版权标题链接
+        span(onclick=`rm.copyPageUrl('${theme.post_copyright.decode ? decodeURI(url) : url}')`)=pageTitle //- 点击复制页面 URL
+    //- 版权工具
+    if theme.ptool.enable //- 如果启用版权工具
+      include ./ptool.pug //- 引入版权工具 Pug 模块
+    .post-copyright__notice //- 版权通知容器
+      span.post-copyright-info!= info //- 显示版权信息
+  .post-tools-right //- 右侧工具容器
+    if (!theme.ptool.categories) //- 如果不显示分类工具
+      .tag_share //- 标签分享容器
+        .post-meta__box //- 元数据盒子
+          if (theme.post_meta.post.tags) //- 如果有文章标签
+            .post-meta__box__tag-list //- 标签列表容器
+              each item, index in page.tags.data //- 遍历文章标签
+                a(href=url_for(item.path)).post-meta__box__tags //- 标签链接
+                  span.tags-punctuation //- 标签标点容器
+                    i.anzhiyufont.anzhiyu-icon-tag //- 标签图标
+                  =item.name //- 显示标签名称
+                  span.tagsPageCount=item.length //- 显示标签页面数量
+
+      !=partial('includes/third-party/share/index.pug', {}, {cache: true}) //- 加载分享工具的 Pug 模块
+    else //- 如果显示分类工具
+      .tag_share //- 标签分享容器
+        .post-meta__box //- 元数据盒子
+          if (page.categories.data.length > 0) //- 如果有分类数据
+            .post-meta__box__category-list //- 分类列表容器
+              each item, index in page.categories.data //- 遍历分类数据
+                a(href=url_for(item.path)).post-meta__box__categoryes //- 分类链接
+                  span.categoryes-punctuation //- 分类标点容器
+                    i.anzhiyufont.anzhiyu-icon-inbox //- 分类图标
+                  =item.name //- 显示分类名称
+                  span.categoryesPageCount=item.length //- 显示分类页面数量
+          if (theme.post_meta.post.tags) //- 如果有文章标签
+            .post-meta__box__tag-list //- 标签列表容器
+              each item, index in page.tags.data //- 遍历文章标签
+                a(href=url_for(item.path)).post-meta__box__tags //- 标签链接
+                  span.tags-punctuation //- 标签标点容器
+                    i.anzhiyufont.anzhiyu-icon-tag //- 标签图标
+                  =item.name //- 显示标签名称
+                  span.tagsPageCount=item.length //- 显示标签页面数量
+
+        !=partial('includes/third-party/share/index.pug', {}, {cache: true}) //- 加载分享工具的 Pug 模块

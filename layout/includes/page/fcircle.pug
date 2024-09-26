@@ -1,0 +1,29 @@
+//- 如果主题的友链功能启用
+if theme.friends_vue.enable
+  .fcircle_page //- 创建友链页面的容器
+    .author-content.author-content-item.fcirclePage.single(style = `background: url(${theme.friends_vue.top_background}) left 28% / cover no-repeat !important;`) //- 创建友链页面的内容容器，设置背景为指定的图片
+      .card-content //- 内容部分
+        .author-content-item-tips 友链 //- 显示友链标题
+        span.author-content-item-title 最新文章订阅 //- 显示副标题
+        .content-bottom //- 底部内容容器
+          .tips=theme.friends_vue.top_tips //- 显示主题配置中的顶部提示信息
+        .banner-button-group //- 按钮组容器
+          a.banner-button(onclick='pjax.loadUrl("/about")') //- 创建一个按钮，点击时加载关于我的页面
+            i.anzhiyufont.anzhiyu-icon-arrow-circle-right(style='font-size: 22px; margin-right: 0.25rem') //- 显示箭头图标
+            span.banner-button-text 关于本人 //- 按钮文本
+
+    .title-h2-a //- 创建标题容器
+      .title-h2-a-left //- 左侧标题部分
+        h2(style='padding-top:0;margin:.6rem 0 .6rem') 🎣 钓鱼 //- 显示主标题 "钓鱼"
+        a.random-post-start(href='javascript:fetchRandomPost();') //- 创建一个随机文章按钮，点击时调用 fetchRandomPost 函数
+          i.anzhiyufont.anzhiyu-icon-arrow-rotate-right //- 显示旋转箭头图标
+      .title-h2-a-right //- 右侧标题部分
+        a.random-post-all(href='/link/') 全部友链 //- 创建链接，指向所有友链的页面
+
+    #random-post //- 创建 ID 为 random-post 的容器，用于显示随机文章
+    #hexo-circle-of-friends-root //- 创建 ID 为 hexo-circle-of-friends-root 的容器，用于友链的根元素
+
+  //- 如果主题配置中有 API URL
+  if (theme.friends_vue.apiurl)
+    script(defer data-pjax src=url_for(theme.asset.random_friends_post_js)) //- 加载随机友链文章的 JavaScript 文件
+  script(defer data-pjax src=url_for(theme.friends_vue.vue_js)) //- 加载 Vue.js 文件

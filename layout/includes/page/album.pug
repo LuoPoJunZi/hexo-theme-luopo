@@ -1,0 +1,29 @@
+#album
+  //- 获取页面的顶部背景图
+  - let album_background = page.top_background
+  .author-content.author-content-item.album.single(style=`${album_background ? `background: url(${album_background}) top / cover no-repeat;` : ""}`)
+    .card-content
+      .author-content-item-tips 相册集 //- 显示相册集提示
+      span.author-content-item-title 这里是我的相册集哦😯 //- 显示相册标题
+      .content-bottom
+        .tips 每一张照片都是一次美好的记忆。 //- 显示相册描述
+      
+      .banner-button-group
+        //- 创建一个按钮，用于跳转到“关于我”页面
+        a.banner-button(onclick='pjax.loadUrl("/about/")')
+          i.anzhiyufont.anzhiyu-icon-arrow-circle-right(style='font-size: 1.5rem') //- 箭头图标
+          span.banner-button-text 关于本人 //- 按钮文本
+      
+  .card-album //- 相册卡片容器
+    //- 遍历网站数据中的相册
+    each i in site.data.album
+      .card(onclick=`pjax.loadUrl("${i.path_name}")`) //- 创建每个相册的卡片，点击后跳转到相册路径
+        img.card_cover(src=i.cover) //- 显示相册封面图
+        .card__content
+          p.card__category=i.class_name //- 显示相册分类
+          h3.card__heading=i.description //- 显示相册描述
+      
+    //- 如果没有相册内容，显示占位符
+    .album-content-nocover
+    .album-content-nocover
+    .album-content-nocover

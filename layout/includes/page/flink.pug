@@ -1,0 +1,146 @@
+//- 文章容器
+#article-container
+  //- 如果主题的链接页面顶部启用且可用
+  if theme.linkPageTop && theme.linkPageTop.enable
+    #flink-banners //- 友情链接横幅容器
+      .banner-top-box //- 顶部横幅盒子
+        .flink-banners-title //- 友情链接标题容器
+          .banners-title-small 友情链接 //- 小标题
+          .banners-title-big=theme.linkPageTop ? theme.linkPageTop.title : "与数百名博主无限进步" //- 大标题，若未设置则使用默认文本
+        .banner-button-group //- 按钮组
+          //- 如果主题配置中有 API URL
+          if (theme.friends_vue.apiurl)
+            a.banner-button.secondary.no-text-decoration(onclick="friendChainRandomTransmission()") //- 创建随机访问按钮
+              i.anzhiyufont.anzhiyu-icon-paper-plane1 //- 按钮图标
+              span.banner-button-text 随机访问 //- 按钮文本
+          //- 如果有添加好友链接的占位符且评论系统使用 Twikoo 且配置了 envId
+          if theme.linkPageTop.addFriendPlaceholder && theme.comments.use == 'Twikoo' && theme.twikoo.envId
+            a.banner-button.no-text-decoration(onclick="anzhiyu.addFriendLink()") //- 创建申请友链按钮
+              i.anzhiyufont.anzhiyu-icon-arrow-circle-right //- 按钮图标
+              span.banner-button-text 申请友链 //- 按钮文本
+      #skills-tags-group-all //- 技能标签组容器
+        .tags-group-wrapper //- 标签组包装器
+          //- 定义一个获取不带感叹号的头像 URL 的函数
+          - function getAvatarWithoutExclamationMark(url) {
+          -   const index = url.indexOf('!');
+          -   return index !== -1 ? url.substring(0, index) : url; //- 返回去掉感叹号后的 URL
+          - }
+          each y in [1,2] //- 遍历 1 和 2
+            each i, index in site.data.link.slice(0, 15) //- 遍历链接数据的前 15 个元素
+              - const link_list = i.link_list.slice() //- 复制链接列表
+              - const hundredSuffix = i.hundredSuffix ? i.hundredSuffix : "" //- 处理后缀
+              - const evenNum = link_list.filter((x, index) => index % 2 === 0); //- 获取偶数索引的链接
+              - const oddNum = link_list.filter((x, index) => index % 2 === 1); //- 获取奇数索引的链接
+              each item, index2 in link_list.slice(0, Math.min(evenNum.length, oddNum.length)) //- 遍历链接列表
+                - const index = index2 * 2 //- 计算索引
+                //- 确保索引在范围内且偶数和奇数列表中都有对应元素
+                if (index <= 15 && typeof evenNum[index] !== 'undefined' && typeof oddNum[index] !== 'undefined')
+                  - let oddNumAvatar = getAvatarWithoutExclamationMark(oddNum[index].avatar); //- 获取奇数头像 URL
+                  - let evenNumAvatar = getAvatarWithoutExclamationMark(evenNum[index].avatar); //- 获取偶数头像 URL
+                  .tags-group-icon-pair //- 标签组图标对容器
+                    a.tags-group-icon.no-text-decoration(href=url_for(evenNum[index].link), title=evenNum[index].name) //- 偶数链接图标
+                      img.no-lightbox(title=evenNum[index].name, src=url_for(evenNumAvatar + hundredSuffix) onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'` alt=evenNum[index].name) //- 偶数链接的头像
+                    a.tags-group-icon.no-text-decoration(href=url_for(oddNum[index].link), title=oddNum[index].name) //- 奇数链接图标
+                      img.no-lightbox(title=oddNum[index].name, src=url_for(oddNumAvatar + hundredSuffix) onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'` alt=oddNum[index].name) //- 奇数链接的头像
+
+  .title-h2-a //- 创建标题容器
+    .title-h2-a-left //- 左侧标题部分
+      h2(style='padding-top:0;margin:.6rem 0 .6rem') 🎣 钓鱼 //- 主标题
+      a.random-post-start.no-text-decoration(href='javascript:fetchRandomPost();') //- 创建随机文章按钮
+        i.anzhiyufont.anzhiyu-icon-arrow-rotate-right //- 按钮图标
+    .title-h2-a-right //- 右侧标题部分
+      a.random-post-all.no-text-decoration(href='/link/') 全部友链 //- 创建链接，指向所有友链的页面
+
+  #random-post //- 随机文章容器
+  script(defer data-pjax src=url_for(theme.asset.random_friends_post_js)) //- 加载随机友链文章的 JavaScript 文件
+  
+  .flink //- 友情链接容器
+    //- 如果有链接数据
+    if site.data.link
+      each i in site.data.link //- 遍历链接数据
+        if i.class_name //- 如果有分类名
+          h2!= i.class_name + "(" + i.link_list.length + ")" //- 显示分类名和链接数量
+        if i.class_desc //- 如果有分类描述
+          .flink-desc!=i.class_desc //- 显示分类描述
+        //- 如果链接样式为 'anzhiyu'
+        if i.flink_style === 'anzhiyu'
+          div(class=i.lost_contact ? 'anzhiyu-flink-list cf-friends-lost-contact' : 'anzhiyu-flink-list') //- 创建友链列表容器
+            if i.link_list //- 如果有链接列表
+              each item in i.link_list //- 遍历链接列表
+                - let color = item.color || "" //- 获取颜色
+                - let tag = item.tag || "" //- 获取标签
+                
+                .flink-list-item //- 友情链接列表项
+                  //- 根据颜色和标签条件显示不同的标签
+                  if color == "vip" && tag
+                    span.site-card-tag.vip #[=tag] //- VIP 标签
+                      i.light
+                  else if color == "speed" && tag
+                    span.site-card-tag.speed #[=tag] //- Speed 标签
+                  else if tag
+                    span.site-card-tag(style=`background-color: ${color}`) #[=tag] //- 自定义颜色标签
+                  else if item.recommend
+                    span.site-card-tag 荐 //- 推荐标签
+                  //- 判断链接是否为失联状态
+                  if i.lost_contact
+                    a.cf-friends-link(href=url_for(item.link) title=item.name target="_blank") //- 失联链接
+                      if theme.lazyload.enable
+                        img.no-lightbox(data-lazy-src=url_for(item.avatar) onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'` alt=item.name ) //- 加载头像
+                      else
+                        img.cf-friends-avatar.no-lightbox(src=url_for(item.avatar) onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'` alt=item.name ) //- 加载头像
+                      .flink-item-info //- 友链信息容器
+                        .flink-item-name.cf-friends-name-lost-contact= item.name //- 显示友链名称
+                  else
+                    a.cf-friends-link(href=url_for(item.link) cf-href=url_for(item.link) title=item.name target="_blank") //- 正常链接
+                      if theme.lazyload.enable
+                        img.cf-friends-avatar.no-lightbox(data-lazy-src=url_for(item.avatar), cf-src=url_for(item.avatar), onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'` alt=item.name ) //- 加载头像
+                      else
+                        img.cf-friends-avatar.no-lightbox(src=url_for(item.avatar) cf-src=url_for(item.avatar) onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'` alt=item.name ) //- 加载头像
+                      .flink-item-info //- 友链信息容器
+                        .flink-item-name.cf-friends-name= item.name //- 显示友链名称
+                        .flink-item-desc(title=item.descr)= item.descr //- 显示友链描述
+        
+        //- 如果链接样式为 'telescopic'
+        else if i.flink_style === 'telescopic'
+          .telescopic-site-card-group //- 伸缩式链接卡片组
+            each item in i.link_list //- 遍历链接列表
+              - let color = item.color || "" //- 获取颜色
+              - let tag = item.tag || "" //- 获取标签
+              - let siteshot = item.siteshot || `https://image.thum.io/get/width/400/crop/800/allowJPG/wait/20/noanimate/${item.link}` || theme.default_img //- 获取网站缩略图
+              .site-card //- 网站卡片
+                //- 根据颜色和标签条件显示不同的标签
+                if color == "vip" && tag
+                  span.site-card-tag.vip #[=tag] //- VIP 标签
+                    i.light
+                else if color == "speed" && tag
+                  span.site-card-tag.speed #[=tag] //- Speed 标签
+                else if tag
+                  span.site-card-tag(style=`background-color: ${color}`) #[=tag] //- 自定义颜色标签
+                else if item.recommend
+                  span.site-card-tag 荐 //- 推荐标签
+                a.img.no-text-decoration(target='_blank', title=`${item.name}`, href=`${item.link}`, rel='external nofollow') //- 链接
+                  img.flink-avatar(data-lazy-src=siteshot, onerror=`this.onerror=null;this.src='${theme.default_img}'`, alt=item.name, style="pointer-events: none;", src=`${siteshot}`) //- 显示网站缩略图
+                a.info.cf-friends-link.no-text-decoration(target='_blank', title=`${item.name}`, href=`${item.link}`, cf-href=url_for(item.link), rel='external nofollow') //- 链接
+                  .site-card-avatar //- 网站卡片头像容器
+                    img.flink-avatar.cf-friends-avatar.no-fancybox(data-lazy-src=item.avatar, cf-src=url_for(item.avatar), onerror=`this.onerror=null;this.src='${theme.default_img}'`, alt=item.name, src=item.avatar) //- 显示友链头像
+                  .site-card-text //- 网站卡片文本容器
+                    span.title.cf-friends-name #[=item.name] //- 显示友链名称
+                    span.desc(title=`${item.descr}`) #[=item.descr] //- 显示友链描述
+        //- 如果链接样式为 'flexcard'
+        else if i.flink_style === 'flexcard'
+          .flexcard-flink-list //- 弹性卡片友链列表
+            each item in i.link_list //- 遍历链接列表
+              a.flink-list-card.cf-friends-link(href=url_for(item.link) cf-href=url_for(item.link) target='_blank' data-title=item.descr) //- 链接卡片
+                .wrapper.cover //- 包装器
+                  - var siteshot = item.siteshot ? url_for(item.siteshot) : 'https://image.thum.io/get/width/400/crop/800/allowJPG/wait/20/noanimate/' + item.link //- 获取网站缩略图
+                  if theme.lazyload.enable
+                    img.cover.fadeIn(data-lazy-src=siteshot onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.post_page) + `'` alt='cover' ) //- 加载缩略图
+                  else
+                    img.cover.fadeIn(src=siteshot onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.post_page) + `'` alt='cover' ) //- 加载缩略图    
+                .info //- 信息容器
+                  if theme.lazyload.enable
+                    img.cf-friends-avatar.no-lightbox.flink-avatar(data-lazy-src=url_for(item.avatar) cf-src=url_for(item.avatar) onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'` alt='cover' ) //- 加载头像
+                  else
+                    img.cf-friends-avatar.no-lightbox(src=url_for(item.avatar) cf-src=url_for(item.avatar) onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'` alt='cover' ) //- 加载头像
+                  span.flink-sitename.cf-friends-name= item.name //- 显示友链名称
+    != page.content //- 显示页面内容

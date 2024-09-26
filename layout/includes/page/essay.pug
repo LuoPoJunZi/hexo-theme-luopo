@@ -1,0 +1,84 @@
+//- 如果网站数据中存在 essay
+if site.data.essay
+  //- 遍历每一篇文章
+  each i in site.data.essay
+    #essay_page //- 创建 ID 为 essay_page 的容器
+      .author-content.author-content-item.essayPage.single(style = i.top_background ? `background: url(${i.top_background}) left 28% / cover no-repeat;` : "") //- 创建文章容器，背景为文章的顶部背景图
+        .card-content //- 文章内容容器
+          .author-content-item-tips=i.title //- 显示文章标题
+          span.author-content-item-title=i.subTitle //- 显示文章副标题
+          .content-bottom //- 文章底部内容容器
+            .tips=i.tips //- 显示文章提示信息
+          .banner-button-group //- 按钮组容器
+            a.banner-button(href=i.buttonLink) //- 创建一个按钮，链接到指定的按钮链接
+              i.anzhiyufont.anzhiyu-icon-arrow-circle-right //- 箭头图标
+              span.banner-button-text=i.buttonText //- 按钮文本
+
+      #bber //- 创建 ID 为 bber 的容器
+        section.timeline.page-1 //- 创建时间线的第一部分
+          ul#waterfall.list //- 创建列表容器
+            //- 遍历当前文章的短文列表
+            each item, index in i.essay_list
+              //- 如果索引小于限制
+              if index < i.limit
+                li.bber-item //- 创建短文条目容器
+                  .bber-content //- 短文内容容器
+                    p.datacont= item.content //- 显示短文内容
+                      //- 如果短文有图片
+                      if item.image
+                        .bber-container-img //- 图片容器
+                          //- 遍历短文中的每一张图片
+                          each iten, indey in item.image
+                            a.bber-content-img(href=url_for(item.image[indey]), target="_blank", data-fancybox="gallery", data-caption="") //- 创建图片链接
+                              img(src=url_for(item.image[indey])) //- 显示图片
+                          .bber-content-noimg //- 如果没有图片占位
+                          .bber-content-noimg
+                          .bber-content-noimg
+                      //- 如果短文有视频
+                      if item.video
+                        .bber-container-img //- 视频容器
+                          //- 遍历短文中的每一个视频
+                          each iten, indey in item.video  
+                            //- 如果视频是来自 bilibili
+                            if (item.video[indey].includes('player.bilibili.com'))
+                              div(style="position: relative; padding: 30% 45%;margin-top: 10px;margin-bottom: 10px;") //- 包裹视频的 div
+                                //- 嵌入 bilibili 播放器
+                                iframe(style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;margin: 0;border-radius: 12px;border: var(--style-border);" src=url_for(item.video[indey]) scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true")
+                            else
+                              a.bber-content-video(href=url_for(item.video[indey]) data-fancybox="gallery", data-caption="") //- 创建视频链接
+                                video(src=url_for(item.video[indey])) //- 显示视频
+                          .bber-content-noimg //- 如果没有视频占位
+                          .bber-content-noimg
+                          .bber-content-noimg
+                      //- 如果短文有音乐播放器
+                      if item.aplayer
+                        .bber-music //- 音乐容器
+                          //- 使用 meting-js 插件嵌入音乐播放器
+                          meting-js(id=item.aplayer.id, server=item.aplayer.server, type="song", mutex="true", preload="none", theme="var(--anzhiyu-main)", data-lrctype="0", order="list")
+                  hr //- 分隔线
+                  .bber-bottom //- 短文底部信息容器
+                    .bber-info //- 短文信息容器
+                      .bber-info-time //- 时间信息容器
+                        - var datedata = new Date(item.date).toISOString() //- 格式化日期
+                        i.anzhiyufont.anzhiyu-icon-clock //- 时钟图标
+                        time.datatime(datetime= item.date)= datedata //- 显示日期时间
+                      //- 如果短文有链接
+                      if item.link 
+                        a.bber-content-link(title="跳转到短文指引的链接", href=url_for(item.link), rel="external nofollow") //- 创建链接
+                          i.anzhiyufont.anzhiyu-icon-link //- 链接图标
+                          | 链接 //- 链接文本
+                      //- 如果短文有来源
+                      if item.from
+                        .bber-info-from //- 来源信息容器
+                          i.anzhiyufont.anzhiyu-icon-fw-fire //- 火焰图标
+                          span=item.from //- 显示来源
+                      //- 如果短文有地址
+                      if item.address
+                        .bber-info-from //- 地址信息容器
+                          i.anzhiyufont.anzhiyu-icon-location-dot //- 位置图标
+                          span=item.address //- 显示地址
+                    .bber-reply(onclick="rm.rightMenuCommentText(" + `'${item.content}'` + ")") //- 回复按钮，点击时复制内容
+                      i.anzhiyufont.anzhiyu-icon-message //- 消息图标
+
+      #bber-tips(style='color: var(--anzhiyu-secondtext);') //- 创建短文提示容器
+        ="- 只展示最近" + i.limit + "条短文 -" //- 显示展示限制提示

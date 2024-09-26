@@ -1,0 +1,44 @@
+#equipment
+  //- 检查网站数据中是否存在 equipment
+  if site.data.equipment
+    //- 遍历每个设备条目
+    each i in site.data.equipment
+      .author-content.author-content-item.fcirclePage.single(style = `background: url(${i.top_background}) left 37% / cover no-repeat !important;`) //- 创建设备卡片，背景为设备的顶部背景图
+        .card-content //- 卡片内容容器
+          .author-content-item-tips=i.class_name //- 显示设备分类名称
+          span.author-content-item-title=i.description //- 显示设备描述
+          .content-bottom
+            .tips=i.tip //- 显示设备提示信息
+            
+      //- 遍历当前设备的好东西列表
+      each item in i.good_things
+        .goodthings-item //- 创建好东西项的容器
+          h2.goodthings-title= item.title //- 显示好东西的标题
+          .goodthings-item-description= item.description //- 显示好东西的描述
+          
+          .equipment-item //- 设备项的容器
+            .equipment-item-content //- 设备内容容器
+              //- 遍历设备列表中的每个设备
+              each iten, indey in item.equipment_list
+                .equipment-item-content-item //- 单个设备内容项
+                  .equipment-item-content-item-cover //- 设备封面图容器
+                    img.equipment-item-content-item-image(data-lazy-src=url_for(iten.image) onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'` alt=iten.name) //- 显示设备图像，支持懒加载，并处理加载错误
+                  
+                  .equipment-item-content-item-info //- 设备信息容器
+                    //- 设备名称，点击时复制名称并显示提示
+                    .equipment-item-content-item-name(onclick=`rm.rightmenuCopyText("${iten.name}");anzhiyu.snackbarShow("${_p('Snackbar.copy_equipment_name') + " 【" + iten.name + "】"}");` title=iten.name)= iten.name 
+                    .equipment-item-content-item-specification= iten.specification //- 显示设备规格
+                    .equipment-item-content-item-description= iten.description //- 显示设备描述
+                    
+                    .equipment-item-content-item-toolbar //- 工具栏容器
+                      //- 如果设备链接是有效的 HTTP/HTTPS 链接
+                      if iten.link.includes('https://') || iten.link.includes('http://')
+                        a.equipment-item-content-item-link(href= iten.link, target='_blank') 详情 //- 显示详情链接
+                        //- 回复按钮，点击后显示设备信息
+                        .bber-reply(onclick="rm.rightMenuCommentText(" + `'${iten.name + " " + iten.specification + " " + iten.description}'` + ")")
+                          i.anzhiyufont.anzhiyu-icon-message //- 消息图标
+                      else  
+                        a.equipment-item-content-item-link(href= iten.link, target='_blank') 查看文章 //- 显示查看文章的链接
+                        //- 回复按钮，点击后显示设备信息
+                        .bber-reply(onclick="rm.rightMenuCommentText(" + `'${iten.name + " " + iten.specification + " " + iten.description}'` + ")")
+                          i.anzhiyufont.anzhiyu-icon-message //- 消息图标
