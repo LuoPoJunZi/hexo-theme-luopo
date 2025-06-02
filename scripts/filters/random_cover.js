@@ -1,6 +1,6 @@
 /**
  * Butterfly
- * ramdom cover
+ * random cover
  */
 
 'use strict'
