@@ -3,8 +3,9 @@
  */
 
 hexo.extend.filter.register('before_generate', () => {
-  const themeConfig = hexo.theme.config
-  let { use } = themeConfig.comments
+  const themeConfig = hexo.theme.config;
+  if (!themeConfig.comments) return;
+  let { use } = themeConfig.comments;
   if (!use) return
   if (typeof use === 'string') {
     use = use.split(',')
@@ -12,3 +13,4 @@ hexo.extend.filter.register('before_generate', () => {
   const newArray = use.map(item => item.toLowerCase().replace(/\b[a-z]/g, s => s.toUpperCase()))
   themeConfig.comments.use = newArray
 })
+
